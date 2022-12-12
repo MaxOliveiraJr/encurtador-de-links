@@ -11,9 +11,6 @@ class LinkShortenerController extends Controller
 {
     public function store(Request $request)
     {
-
-
-
         $validator = Validator::make($request->all(), [
 
             'url' => 'required|url'
@@ -34,7 +31,7 @@ class LinkShortenerController extends Controller
                 [
                     "url_from" => $request->url,
                     "url_to" => (string) Str::uuid(),
-                    "validity_until" => date('Y-m-d H:S:s.u', strtotime('+7 days'))
+                    "validity_until" => date('Y-m-d H:i:s.u', strtotime('+7 days'))
                 ]
             );
 
@@ -74,6 +71,7 @@ class LinkShortenerController extends Controller
             return response()->json(["message" => $e], 500);
         }
     }
+
 
     public function show(Request $request)
     {

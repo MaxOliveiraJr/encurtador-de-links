@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Link;
-use Illuminate\Http\Request;
 
 class LinkRedirectionController extends Controller
 {
@@ -17,9 +16,8 @@ class LinkRedirectionController extends Controller
             return $link;
         }
 
-        return response('404', [
-
+        return response()->json([
             'message' => 'URL not found'
-        ]);
+        ],404 );
     }
 }

@@ -22,4 +22,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::post('shortener', [LinkShortenerController::class, 'store']);
-Route::get('/{code}',[LinkRedirectionController::class,'redirection']);
+Route::get('/redirection/{code}',[LinkRedirectionController::class,'redirection']);

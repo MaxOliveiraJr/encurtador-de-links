@@ -13,11 +13,13 @@ class LinkRedirectionController extends Controller
 
         if ($link) {
 
-            return $link;
-        }
+            return redirect()->away($link->url_from);
 
-        return response()->json([
-            'message' => 'URL not found'
-        ],404 );
+        } else {
+
+            return response()->json([
+                'message' => 'URL not found'
+            ], 404);
+        }
     }
 }

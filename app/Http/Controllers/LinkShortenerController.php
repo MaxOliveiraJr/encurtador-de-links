@@ -21,11 +21,7 @@ class LinkShortenerController extends Controller
             return response()->json(["message" => "The url field is required and in URL format"], 422);
         }
 
-
         try {
-
-
-            $register =  Link::where('url_to', $request->url);
 
             $link = Link::create(
                 [
@@ -89,7 +85,7 @@ class LinkShortenerController extends Controller
 
         if ($link) {
 
-            if($link->validity_until >= now()){
+            if($link->validity_until >= now() && $link->status){
                 return $link;
             }
         }

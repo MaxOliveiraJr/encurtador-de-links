@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('url_from');
             $table->string('url_to')->unique();
             $table->boolean('status')->default(1);
-            $table->date('validity_until');
+            $table->dateTime('validity_until');
             $table->timestamps();
         });
     }

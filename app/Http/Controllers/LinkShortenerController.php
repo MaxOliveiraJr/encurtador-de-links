@@ -13,6 +13,7 @@ class LinkShortenerController extends Controller
     {
 
 
+
         $validator = Validator::make($request->all(), [
 
             'url' => 'required|url'
@@ -26,11 +27,14 @@ class LinkShortenerController extends Controller
 
         try {
 
+
+            $register =  Link::where('url_to', $request->url);
+
             $link = Link::create(
                 [
                     "url_from" => $request->url,
                     "url_to" => (string) Str::uuid(),
-                    "validity_until" => date('Y-m-d h:m:s.u', strtotime('+7 days'))
+                    "validity_until" => date('Y-m-d H:S:s.u', strtotime('+7 days'))
                 ]
             );
 
@@ -40,6 +44,7 @@ class LinkShortenerController extends Controller
             return response()->json(["message" => $e], 500);
         }
     }
+
 
     public function edit(Request $request)
     {
@@ -64,10 +69,35 @@ class LinkShortenerController extends Controller
             );
 
             return $link;
-
         } catch (\Exception $e) {
 
             return response()->json(["message" => $e], 500);
         }
+    }
+
+    public function show(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'hash' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+
+            return response()->json(["message" => "The hash field is required"], 422);
+        }
+
+        $link = Link::where("url_to", $request->hash)->first();
+
+        if ($link) {
+
+            if($link->validity_until >= now()){
+                return $link;
+            }
+        }
+
+        return response()->json([
+            "message" => "URL not found"
+        ], 404);
     }
 }

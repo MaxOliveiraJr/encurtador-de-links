@@ -14,7 +14,7 @@ class LinkRedirectionController extends Controller
 
         if ($link) {
 
-            return redirect()->away($link->url_from);
+            return $link;
         }
 
         return response('404', [

@@ -40,4 +40,34 @@ class LinkShortenerController extends Controller
             return response()->json(["message" => $e], 500);
         }
     }
+
+    public function edit(Request $request)
+    {
+
+        $validator = Validator::make($request->all(), [
+            'hash' => 'required|string',
+            'status' => 'required|boolean'
+
+        ]);
+
+        if ($validator->fails()) {
+
+            return response()->json(["message" => "The status and hash field is required"], 422);
+        }
+
+        try {
+
+            $link = Link::where('url_to', $request->hash)->update(
+                [
+                    "status" => $request->status,
+                ]
+            );
+
+            return $link;
+
+        } catch (\Exception $e) {
+
+            return response()->json(["message" => $e], 500);
+        }
+    }
 }

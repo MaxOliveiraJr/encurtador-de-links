@@ -19,10 +19,9 @@ class LinkShortenerController extends Controller
             $link = new Link();
             $link->url_from = $request->url;
             $link->url_to = (string) Str::uuid();
-            $link->validity_until = date('Y/m/d h:m:s', strtotime('+7 days'));
+            $link->validity_until = date('Y-m-d h:m:s', strtotime('+7 days'));
             $link->save();
             return $link;
-
         } catch (\Exception $e) {
 
             return $e;

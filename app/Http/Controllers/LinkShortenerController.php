@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Link;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
 
 class LinkShortenerController extends Controller
@@ -25,8 +24,8 @@ class LinkShortenerController extends Controller
 
             $link = Link::create(
                 [
-                    "url_from" => $request->url,
-                    "url_to" => (string) Str::uuid(),
+                    "url" => $request->url,
+                    "code" => hash('crc32b', $request->url),
                     "validity_until" => date('Y-m-d H:i:s.u', strtotime('+7 days'))
                 ]
             );
@@ -43,19 +42,19 @@ class LinkShortenerController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'hash' => 'required|string',
+            'code' => 'required|string',
             'status' => 'required|boolean'
 
         ]);
 
         if ($validator->fails()) {
 
-            return response()->json(["message" => "The status and hash field is required"], 422);
+            return response()->json(["message" => "The status and code field is required"], 422);
         }
 
         try {
 
-            $link = Link::where('url_to', $request->hash)->update(
+            $link = Link::where('code', $request->code)->update(
                 [
                     "status" => $request->status,
                 ]
@@ -73,19 +72,20 @@ class LinkShortenerController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'hash' => 'required|string',
+            'code' => 'required|string',
         ]);
 
         if ($validator->fails()) {
 
-            return response()->json(["message" => "The hash field is required"], 422);
+            return response()->json(["message" => "The code field is required"], 422);
         }
 
-        $link = Link::where("url_to", $request->hash)->first();
+        $link = Link::where("code", $request->code)->first();
+
 
         if ($link) {
 
-            if($link->validity_until >= now() && $link->status){
+            if ($link->validity_until >= now() && $link->status) {
                 return $link;
             }
         }
